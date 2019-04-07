@@ -31,15 +31,19 @@ public class enterance extends JFrame{
 	JButton btnSend;
 	JButton btnExit;
 	Thread listenDataUpdate;
+	client clt;
 	public enterance() {
 		setBounds(100,100,500,450);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 
 	
-		client clt = new client();
+		clt = new client();
 		String[] columnNames = {"Id","User","State"};
 
+		tabloDoldur();
+		//listenDataUpdate.start();
+		
 		lblUserName = new JLabel("User Name");
 		lblUserName.setBounds(27, 24, 71, 14);
 		getContentPane().add(lblUserName);
@@ -92,35 +96,7 @@ public class enterance extends JFrame{
 		table.setRowSelectionAllowed(true);
 		scrollPane.setColumnHeaderView(table);
 
-		listenDataUpdate = new Thread()
-		{
-			public void run()
-			{								
-				for(;;)
-				{
-					repaint();
-					if (clt.flag)
-					{
 
-						System.out.println("flag durum:"+clt.flag);
-						
-						clt.flag = false;
-						System.out.println("tablo boyu : "+clt.ids.size());
-				        String[][] data1 = new String[clt.ids.size()][3];
-
-						for(int i=0;i<clt.ids.size();i++)
-						{
-							data1[i][0] = Integer.toString(clt.ids.get(i));
-							data1[i][1] = clt.names.get(i);
-							data1[i][2] = Integer.toString(clt.conState.get(i));
-						}
-						btnSend.setEnabled(true);
-						table.setModel(new DefaultTableModel(data1, new String[]{"Id","User","State"}));
-
-					}
-				}
-			}
-		};listenDataUpdate.start();
 		
 		btnUpdate = new JButton("Update");
 		btnUpdate.setEnabled(false);
@@ -128,6 +104,7 @@ public class enterance extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				clt.userConnState = true;
 				clt.sendUpdate();
+				tabloDoldur();
 			}
 		});
 		btnUpdate.setBounds(132, 145, 89, 23);
@@ -176,5 +153,41 @@ public class enterance extends JFrame{
 		btnExit.setEnabled(false);
 		btnExit.setBounds(132, 109, 89, 23);
 		getContentPane().add(btnExit);
+	}
+	
+	public void tabloDoldur()
+	{
+		/*listenDataUpdate = new Thread()
+		{
+			public void run()
+			{								
+				for(;;)
+				{*/
+					repaint();
+					if (clt.flag)
+					{
+
+						System.out.println("flag durum:"+clt.flag);
+						
+						clt.flag = false;
+						System.out.println("tablo boyu : "+clt.ids.size());
+				        String[][] data1 = new String[clt.ids.size()][3];
+
+						for(int i=0;i<clt.ids.size();i++)
+						{
+							data1[i][0] = Integer.toString(clt.ids.get(i));
+							data1[i][1] = clt.names.get(i);
+							data1[i][2] = Integer.toString(clt.conState.get(i));
+						}
+						btnSend.setEnabled(true);
+						DefaultTableModel tm = new DefaultTableModel(data1, new String[]{"Id","User","State"});
+						table.setModel(tm);
+
+						//tm.fireTableDataChanged();
+					}
+				/*}
+			}
+		};*/
+		
 	}
 }
