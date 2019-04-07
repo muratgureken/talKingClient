@@ -6,6 +6,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import mg1.com.client;
+import mg1.com.messageReceive;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -37,13 +38,9 @@ public class enterance extends JFrame{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 
-	
 		clt = new client();
 		String[] columnNames = {"Id","User","State"};
 
-		tabloDoldur();
-		//listenDataUpdate.start();
-		
 		lblUserName = new JLabel("User Name");
 		lblUserName.setBounds(27, 24, 71, 14);
 		getContentPane().add(lblUserName);
@@ -61,7 +58,7 @@ public class enterance extends JFrame{
 		getContentPane().add(txtUserName);
 		txtUserName.setColumns(10);
 
-		txtIp = new JTextField("10.0.9.11");
+		txtIp = new JTextField("192.168.1.36");
 		txtIp.setBounds(108, 47, 86, 20);
 		getContentPane().add(txtIp);
 		txtIp.setColumns(10);
@@ -91,13 +88,11 @@ public class enterance extends JFrame{
 		getContentPane().add(scrollPane);
 
 		table = new JTable();
-		table.setEnabled(false);
-		table.setColumnSelectionAllowed(true);
-		table.setRowSelectionAllowed(true);
+		table.setEnabled(true);
+		//table.setColumnSelectionAllowed(true);
+		//table.setRowSelectionAllowed(true);
 		scrollPane.setColumnHeaderView(table);
 
-
-		
 		btnUpdate = new JButton("Update");
 		btnUpdate.setEnabled(false);
 		btnUpdate.addActionListener(new ActionListener() {
@@ -123,15 +118,18 @@ public class enterance extends JFrame{
 		btnSend.setEnabled(false);
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int[] rows = new int[table.getRowCount()];
+				int[] rows = new int[table.getSelectedRowCount()];
 				String str;
 				rows = table.getSelectedRows();
+				System.out.println("secilen satir sayisi:"+table.getSelectedRowCount()+" satirlar : "+rows+" row sayisi : "+rows.length);
+				clt.sendIds.clear();
+				clt.messageIn = "";
 				//sendIds, userId, messageIn
 				for(int i=0; i<rows.length; i++)
 				{
 					str = ""+table.getValueAt(rows[i], 0);
 					int idvalue = Integer.parseInt(str);
-					clt.sendIds.set(i, idvalue);
+					clt.sendIds.add(idvalue);
 					clt.messageIn = txtMessageSend.getText();
 				}
 				clt.sendUserMessage();
@@ -157,37 +155,32 @@ public class enterance extends JFrame{
 	
 	public void tabloDoldur()
 	{
-		/*listenDataUpdate = new Thread()
+		btnUpdate.setEnabled(false);
+		repaint();
+
+		for(;;)
 		{
-			public void run()
-			{								
-				for(;;)
-				{*/
-					repaint();
-					if (clt.flag)
-					{
+			if (clt.flag)
+			{
+				System.out.println("flag durum:"+clt.flag);
 
-						System.out.println("flag durum:"+clt.flag);
-						
-						clt.flag = false;
-						System.out.println("tablo boyu : "+clt.ids.size());
-				        String[][] data1 = new String[clt.ids.size()][3];
+				clt.flag = false;
+				System.out.println("tablo boyu : "+clt.ids.size());
+				String[][] data1 = new String[clt.ids.size()][3];
 
-						for(int i=0;i<clt.ids.size();i++)
-						{
-							data1[i][0] = Integer.toString(clt.ids.get(i));
-							data1[i][1] = clt.names.get(i);
-							data1[i][2] = Integer.toString(clt.conState.get(i));
-						}
-						btnSend.setEnabled(true);
-						DefaultTableModel tm = new DefaultTableModel(data1, new String[]{"Id","User","State"});
-						table.setModel(tm);
-
-						//tm.fireTableDataChanged();
-					}
-				/*}
+				for(int i=0;i<clt.ids.size();i++)
+				{
+					data1[i][0] = Integer.toString(clt.ids.get(i));
+					data1[i][1] = clt.names.get(i);
+					data1[i][2] = Integer.toString(clt.conState.get(i));
+				}
+				btnSend.setEnabled(true);
+				DefaultTableModel tm = new DefaultTableModel(data1, new String[]{"Id","User","State"});
+				table.setModel(tm);
+				clt.flag = false;
+				btnUpdate.setEnabled(true);
+				break;
 			}
-		};*/
-		
+		}
 	}
 }

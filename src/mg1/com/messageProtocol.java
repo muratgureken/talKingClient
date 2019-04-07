@@ -7,7 +7,7 @@ public class messageProtocol {
 	{
 		String messageT2M="1";
 
-		int size = receiveId.size() + 1;
+		int size = receiveId.size();
 		String buffer = Integer.toString(size);
 		messageT2M = messageT2M+zeroPad(buffer,8);
 		buffer = Integer.toString(sendId);

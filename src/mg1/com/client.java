@@ -1,6 +1,7 @@
 package mg1.com;
 
 import java.net.*;
+import java.nio.channels.Channel;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.io.*; 
@@ -63,7 +64,7 @@ public class client{
 		Thread talKingTh = new Thread()
 		{
 			int nameSize, messageOfset;
-			
+
 			public void run()
 			{								
 				for(;;)
@@ -79,17 +80,17 @@ public class client{
 							messageId = Integer.parseInt(line.substring(0,1));
 							//NEDEN VAR?
 							//out.writeUTF(line); 
-							
+
 							switch(messageId)
 							{
 							case 1:
 								nameSize = Integer.parseInt(line.substring(1,9));
 								otherUserName = line.substring(9,9+nameSize);
 								messageIn = line.substring(9+nameSize);
+								System.out.println("mesaji aldim : "+nameSize+" "+otherUserName+" "+messageIn);
 								justMessageReceived = true;
 								break;
 							case 2:
-								flag = true;
 								messageOfset = 0;
 								ids.clear();
 								names.clear();
@@ -111,14 +112,14 @@ public class client{
 									conState.add(Integer.parseInt(line.substring(25+nameSize+messageOfset,25+nameSize+messageOfset+1)));
 									messageOfset = 17+nameSize+messageOfset;
 								}
-
+								flag = true;
 								break;
 							case 3:
 								userId = Integer.parseInt(line.substring(1,9));
 								break;
 							}
 						} 
-	
+
 						catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -128,6 +129,7 @@ public class client{
 			}
 		};
 		talKingTh.start();
+
 	}
 
 	public void sendUserMessage()
