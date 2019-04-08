@@ -3,10 +3,12 @@ package mg1.com;
 import java.net.*;
 import java.nio.channels.Channel;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.io.*; 
 
-public class client{
+public class client implements Observable{
 	// initialize socket and input output streams 
 	private Socket socket            = null; 
 	private DataInputStream  input   = null; 
@@ -25,6 +27,7 @@ public class client{
 	private String tcpMessage;
 	public boolean userConnState;
 	public boolean justMessageReceived=false;
+	private List<Observer> observerList = new ArrayList<>();
 
 	// constructor to put ip address and port 
 	public client() 
@@ -89,6 +92,8 @@ public class client{
 								messageIn = line.substring(9+nameSize);
 								System.out.println("mesaji aldim : "+nameSize+" "+otherUserName+" "+messageIn);
 								justMessageReceived = true;
+								notifyObserver();
+								justMessageReceived = false;
 								break;
 							case 2:
 								messageOfset = 0;
@@ -192,5 +197,22 @@ public class client{
 		{ 
 			System.out.println(i); 
 		} 
+	}
+
+	@Override
+	public void removeObserver(Observer observer) {
+		observerList.remove(observer); // Kullanýcýlarý duyuruya eklemek için.
+	}
+	
+	@Override
+	public void addObserver(Observer observer) {
+		observerList.add(observer); // Kullanýcýlarý duyuruya eklemek için.
+	}
+
+	@Override
+	public void notifyObserver() {
+		for (Observer observer : observerList) {
+			observer.notify(justMessageReceived); // Duyuru ya kayýtlý kullanýcýlara mesaj göndermek için.
+		}
 	}
 }

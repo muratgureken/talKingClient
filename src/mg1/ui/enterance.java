@@ -5,8 +5,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import mg1.com.Observable;
+import mg1.com.Observer;
 import mg1.com.client;
-import mg1.com.messageReceive;
+import mg1.com.observeNewMessage;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -33,12 +35,19 @@ public class enterance extends JFrame{
 	JButton btnExit;
 	Thread listenDataUpdate;
 	client clt;
+	observeNewMessage onm;
+    private Observable observable;
+
 	public enterance() {
 		setBounds(100,100,500,450);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 
 		clt = new client();
+		//observer
+		onm = new observeNewMessage();
+		clt.addObserver(onm);
+		
 		String[] columnNames = {"Id","User","State"};
 
 		lblUserName = new JLabel("User Name");
