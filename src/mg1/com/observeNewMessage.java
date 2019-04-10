@@ -6,7 +6,11 @@ public class observeNewMessage implements Observer{
 	public void notify(boolean justReceived) {
 		if(justReceived)
 		{
-			System.out.println("mesaj geldi");
+			System.out.println("mesaj geldi : "+justReceived);
+		}
+		else
+		{
+			System.out.println("mesaj geldi : "+justReceived);			
 		}
 	}
 

@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
 
-public class enterance extends JFrame{
+public class enterance extends JFrame implements Observer{
 	private JTextField txtUserName;
 	private JTextField txtIp;
 	private JTextField txtPort;
@@ -35,7 +35,6 @@ public class enterance extends JFrame{
 	JButton btnExit;
 	Thread listenDataUpdate;
 	client clt;
-	observeNewMessage onm;
     private Observable observable;
 
 	public enterance() {
@@ -44,10 +43,8 @@ public class enterance extends JFrame{
 		getContentPane().setLayout(null);
 
 		clt = new client();
-		//observer
-		onm = new observeNewMessage();
-		clt.addObserver(onm);
-		
+		clt.addObserver(this);	
+
 		String[] columnNames = {"Id","User","State"};
 
 		lblUserName = new JLabel("User Name");
@@ -160,6 +157,19 @@ public class enterance extends JFrame{
 		btnExit.setEnabled(false);
 		btnExit.setBounds(132, 109, 89, 23);
 		getContentPane().add(btnExit);
+	}
+	
+	@Override
+	public void notify(boolean justReceived) {
+		if(justReceived)
+		{
+			System.out.println("mesaj geldi : "+justReceived);
+			txtMessageRead.setText("["+clt.userName+"] "+clt.messageIn);;
+		}
+		else
+		{
+			System.out.println("mesaj geldi : "+justReceived);			
+		}
 	}
 	
 	public void tabloDoldur()

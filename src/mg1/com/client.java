@@ -90,7 +90,7 @@ public class client implements Observable{
 								nameSize = Integer.parseInt(line.substring(1,9));
 								otherUserName = line.substring(9,9+nameSize);
 								messageIn = line.substring(9+nameSize);
-								System.out.println("mesaji aldim : "+nameSize+" "+otherUserName+" "+messageIn);
+								System.out.println("client 1 nolu mesaji aldim : "+nameSize+" "+otherUserName+" "+messageIn);
 								justMessageReceived = true;
 								notifyObserver();
 								justMessageReceived = false;
@@ -101,7 +101,7 @@ public class client implements Observable{
 								names.clear();
 								conState.clear();
 								dbSize = Integer.parseInt(line.substring(1,9));
-								System.out.println("client 2 nolu mesaj:"+line+" dbsize:"+dbSize);
+								System.out.println("client 2 nolu mesaj aldi:"+line+" dbsize:"+dbSize);
 								System.out.println("mesaj ofset1: "+messageOfset+" mesaj: "+line.substring(9+messageOfset,17+messageOfset)+
 										" "+line.substring(17+messageOfset,25+messageOfset));
 
@@ -120,6 +120,7 @@ public class client implements Observable{
 								flag = true;
 								break;
 							case 3:
+								System.out.println("client 3 nolu mesaji aldi");
 								userId = Integer.parseInt(line.substring(1,9));
 								break;
 							}
