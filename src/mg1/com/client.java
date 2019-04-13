@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.io.*; 
+import java.util.logging.Level;
+
+import log.Log;
+
+import java.util.logging.*;
 
 public class client implements Observable{
 	// initialize socket and input output streams 
@@ -28,7 +33,7 @@ public class client implements Observable{
 	public boolean userConnState;
 	public boolean justMessageReceived=false;
 	private List<Observer> observerList = new ArrayList<>();
-
+	Log myLog;
 	// constructor to put ip address and port 
 	public client() 
 	{ 		
@@ -38,13 +43,22 @@ public class client implements Observable{
 
 	public void clientConnect(String address, int port) 
 	{
+		try {
+			myLog = new Log("log.txt");
+			myLog.logger.setLevel(Level.INFO);
+		} catch (SecurityException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		//port = 4500;
 		// establish a connection 
 		try
 		{ 
 			socket = new Socket(address, port); 
 			System.out.println("Connected"); 
-
+			myLog.logger.info("client connected to the server");
 			// takes input from terminal 
 			input = new DataInputStream(
 					new BufferedInputStream(socket.getInputStream()));  
@@ -76,9 +90,12 @@ public class client implements Observable{
 					{
 						String line = ""; 
 						System.out.println("client mesaj bekler");
+						myLog.logger.info("client mesaj bekler");
+						
 						try {
 							line = input.readUTF();
 							System.out.println("client mesaj bekler-2");
+							myLog.logger.info("client mesaj bekler-2");
 							justMessageReceived = false;
 							messageId = Integer.parseInt(line.substring(0,1));
 							//NEDEN VAR?
@@ -103,6 +120,9 @@ public class client implements Observable{
 								dbSize = Integer.parseInt(line.substring(1,9));
 								System.out.println("client 2 nolu mesaj aldi:"+line+" dbsize:"+dbSize);
 								System.out.println("mesaj ofset1: "+messageOfset+" mesaj: "+line.substring(9+messageOfset,17+messageOfset)+
+										" "+line.substring(17+messageOfset,25+messageOfset));
+								myLog.logger.info("client 2 nolu mesaj aldi:"+line+" dbsize:"+dbSize);
+								myLog.logger.info("mesaj ofset1: "+messageOfset+" mesaj: "+line.substring(9+messageOfset,17+messageOfset)+
 										" "+line.substring(17+messageOfset,25+messageOfset));
 
 								for(int i=0;i<dbSize;i++)
@@ -141,6 +161,7 @@ public class client implements Observable{
 	public void sendUserMessage()
 	{
 		tcpMessage = msgp.clientMessage(sendIds, userId, messageIn);
+		myLog.logger.info("clinet send message : "+tcpMessage);
 		try {
 			out.writeUTF(tcpMessage);
 		} catch (IOException e) {
